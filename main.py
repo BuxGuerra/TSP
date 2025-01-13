@@ -38,4 +38,4 @@ print(f"Numero de nós: {len(G.vs)}")
 print(f"Numero de arestas: {len(G.es)}")
 
 
-
+ig.summary(G)
