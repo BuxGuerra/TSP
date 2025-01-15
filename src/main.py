@@ -3,6 +3,7 @@ import tsplib95
 import math
 
 from twiceAroundTheTree import twice_around_the_tree
+from christofides import christofides
 
 # Função para calcular a distância Euclidiana
 def euclidean_distance(x1, y1, x2, y2):
@@ -40,11 +41,9 @@ print(f"Numero de nós: {len(G.vs)}")
 print(f"Numero de arestas: {len(G.es)}")
 
 
-
-
-
 #rodar com branch and bound
 #rodar com  twice-around-the-tree
 print(twice_around_the_tree(G))
 #rodar com Christofides
+print(christofides(G))
 
