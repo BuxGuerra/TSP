@@ -9,7 +9,7 @@ def euclidean_distance(x1, y1, x2, y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 # Caminho para o arquivo .tsp
-tsp_file_path = "data/pr76.tsp"
+tsp_file_path = "data/att48.tsp"
 
 # Carregar o problema do TSP usando tsplib95
 problem = tsplib95.load(tsp_file_path)

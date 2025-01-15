@@ -4,7 +4,7 @@
 import igraph as ig
 
 def twice_around_the_tree(graph: ig.Graph):
-    msp = graph.spanning_tree()
+    msp = graph.spanning_tree(weights=graph.es["weight"])
 
     initial_tuple = (0,0)  #(vertice inicial, pai) (pai aqui não faz sentido por isso deixei o mesmo)
     stack = []
@@ -26,7 +26,6 @@ def twice_around_the_tree(graph: ig.Graph):
             new_tuple = (neighbor, current_vertice)
             stack.append(new_tuple)
 
-    print(path)
 
     #Calcular o tamanho do caminho
     path_weight = 0
