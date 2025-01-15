@@ -1,6 +1,3 @@
-#computar Arvore geradora minima
-#retornar a pre-ordem
-
 import igraph as ig
 
 def twice_around_the_tree(graph: ig.Graph):
@@ -12,6 +9,7 @@ def twice_around_the_tree(graph: ig.Graph):
 
     path = []
 
+    #Caminhamento em pre-ordem
     while(stack):
         current_tuple = stack.pop()
         current_vertice = current_tuple[0]

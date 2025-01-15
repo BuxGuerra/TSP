@@ -34,7 +34,7 @@ for i in range(len(coordinates)):
         G.add_edge(i, j, weight=distance)
 
 # Verificar a estrutura do grafo
-print(G.neighbors(0))
+print(G.induced_subgraph([0,1,2]))
 
 
 #rodar com branch and bound
