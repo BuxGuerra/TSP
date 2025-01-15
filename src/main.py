@@ -7,7 +7,7 @@ def euclidean_distance(x1, y1, x2, y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 # Caminho para o arquivo .tsp
-tsp_file_path = "ALL_tsp/burma14.tsp"
+tsp_file_path = "data/burma14.tsp"
 
 # Carregar o problema do TSP usando tsplib95
 problem = tsplib95.load(tsp_file_path)
@@ -39,3 +39,9 @@ print(f"Numero de arestas: {len(G.es)}")
 
 
 ig.summary(G)
+
+
+#rodar com branch and bound
+#rodar com  twice-around-the-tree
+#rodar com Christofides
+
