@@ -12,19 +12,10 @@ def christofides(graph: ig.Graph):
             odd_degree_vertices.append(i)
 
     induced_subgraph = graph.induced_subgraph(odd_degree_vertices)
-    print(induced_subgraph.vs[5])
 
     #Encontrar matching perfeito de peso mínimo no grafo induzido
     induced_subgraph_nx = induced_subgraph.to_networkx()
     mwpm_nx = nx.algorithms.matching.min_weight_matching(induced_subgraph_nx, weight="weight")
-    print(mwpm_nx)
-
-    #o mwpm_nx é um set que contem as arestas de mwpm
-    #preciso então fazer um novo grafo que é a junção da mst com essas novas arestas
-    #preciso me atentar a usar o nome dos vertices e não os indices
-    #itero sobre o set
-        #olho os dois vertices que fazem a aresta, vejo o nome deles, adiciono uma nova aresta
-        #no novo grafo com base no nome dos vértices
 
     #Construir novo multigrafo juntando a msp e o matching perfeito
     multigraph = msp.copy()
@@ -34,33 +25,32 @@ def christofides(graph: ig.Graph):
         edge_weight = induced_subgraph_nx[edge[0]][edge[1]]["weight"]
         
         v1_index = graph.vs.find(name=v1_name).index
-        
-        
-        
-        
+        v2_index = graph.vs.find(name=v2_name).index
 
+        multigraph.add_edge(v1_index, v2_index)
+        edge_id = multigraph.ecount() - 1
+        multigraph.es[edge_id]["weight"] = edge_weight
+        
+    
+    #Encontrar circuito euleriano no novo grafo
+    multigraph_nx = multigraph.to_networkx()
+    eulerian_circuit = nx.eulerian_circuit(multigraph_nx)
+    eulerian_vertices = [u for u, v in eulerian_circuit]
+
+    #Achar solução pro tsp a partir do circuito euleriano
+    path = []
+    for vertice in eulerian_vertices:
+        if vertice not in path:
+            path.append(vertice)
 
     
-    #Problema aqui: quando fiz o grafo induzido acho que perdi os indices originais dos vertices
-    #No grafo induzido o nome dos vertices se mantiveram
-    #Quando transformou pra nx tbm se mantiveram
-
-    #mwpm = ig.Graph.from_networkx(mwpm_nx)
-
-
-    #Encontrar circuito euleriano no novo grafo
-    #Achar solução pro tsp a partir do circuito euleriano
-
-
-
-
     #Calcular o tamanho do caminho
-    #path_weight = 0
-    #for i in range(len(path)):
-    #    edge_id = graph.get_eid(path[i], path[(i+1)%len(path)])
-    #    path_weight += graph.es[edge_id]["weight"]
-#
-    #return path_weight
+    path_weight = 0
+    for i in range(len(path)):
+        edge_id = graph.get_eid(path[i], path[(i+1)%len(path)])
+        path_weight += graph.es[edge_id]["weight"]
+
+    return path_weight
 
 
 

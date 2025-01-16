@@ -34,7 +34,14 @@ for i in range(len(coordinates)):
         G.add_edge(i, j, weight=distance)
 
 # Verificar a estrutura do grafo
-print(G.induced_subgraph([0,1,2]))
+G.add_edge(1, 2)
+#edge_id = G.get_eid(1, 2)
+edge_id = G.ecount() - 1
+print(edge_id)
+print(G.es[edge_id]["weight"])
+G_nx = G.to_networkx()
+print(G_nx.number_of_edges())
+#print(G)
 
 
 #rodar com branch and bound
