@@ -4,10 +4,8 @@ import numpy as np
 import heapq
 
 
-
-#Manter uma lista ordenada com os nós 
+#Manter uma heap ordenada com os nós 
 #Cada nó armazena: lower bound, caminho parcial
-
 
 class node:
     def __init__(self, lb: float, path: list):
@@ -26,7 +24,7 @@ def branch_and_bound(graph: ig.Graph):
     #Calcular lb para o nó inicial
     lb = 0
     smallest_edges = np.empty(graph.vcount(), dtype=object)
-    #smallest_edges = []
+    
     for vertex in graph.vs:
         edges = []
         neighbors = graph.neighbors(vertex.index)
@@ -37,8 +35,6 @@ def branch_and_bound(graph: ig.Graph):
             edge_tuple = (edge_id, edge_weight)
             edges.append(edge_tuple)
 
-        #edges_array = np.array(edges)
-        #edges_sorted_array = sorted(edges_array, key=lambda x: x[1])
         edges_sorted_array = sorted(edges, key=lambda x: x[1])
         
         lb += (edges_sorted_array[0][1] + edges_sorted_array[1][1])/2
@@ -64,7 +60,7 @@ def branch_and_bound(graph: ig.Graph):
 
         #Se o nó é folha
         if(len(partial_path) == graph.vcount()):
-            #calcular tamanho do caminho: falta retirar e colocar a nova aresta entre o ultimo e primeiro
+            #calcular tamanho do caminho
             first_vertex = partial_path[0]
             last_vertex = partial_path[-1]
             edge_id = graph.get_eid(first_vertex, last_vertex)
@@ -73,15 +69,16 @@ def branch_and_bound(graph: ig.Graph):
             path_weight = lb - (smallest_edges[last_vertex][0] + smallest_edges[first_vertex][0])/2
             path_weight += edge_weight
 
-            #verficar se é melhor que a melhor que já temos
+            #verficar se é melhor que o melhor que já temos
             if path_weight < best_path_weight:
                 best_path_weight = path_weight
 
             continue
 
 
+        #Abre os vértices filhos
         new_partial_path = partial_path.copy()
-    
+
         for vertex in range(graph.vcount()):
             if vertex in partial_path:
                 continue
@@ -90,6 +87,8 @@ def branch_and_bound(graph: ig.Graph):
             #calcular novo lb
             edge_id = graph.get_eid(new_partial_path[-2], vertex)
             edge_weight = graph.es[edge_id]['weight']
+            
+            #Quando o elemento é o segundo precisa fazer de um jeito levemente diferente
             if(len(new_partial_path) == 2):
                 new_lb = lb - (smallest_edges[vertex][1] + smallest_edges[new_partial_path[-2]][1])/2
                 new_lb += edge_weight
