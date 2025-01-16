@@ -33,15 +33,11 @@ for i in range(len(coordinates)):
         # Adicionar a aresta ao grafo com o peso calculado
         G.add_edge(i, j, weight=distance)
 
-# Verificar a estrutura do grafo
-G.add_edge(1, 2)
-#edge_id = G.get_eid(1, 2)
-edge_id = G.ecount() - 1
-print(edge_id)
-print(G.es[edge_id]["weight"])
-G_nx = G.to_networkx()
-print(G_nx.number_of_edges())
-#print(G)
+
+
+for vertex in G.vs:
+        edges = edges = graph.es.select(_from=vertex_id) + graph.es.select(_to=vertex_id)
+        print(edges[0])
 
 
 #rodar com branch and bound
