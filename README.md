@@ -64,7 +64,3 @@ Os resultados são salvos em um arquivo CSV contendo:
 
 - Guilherme B. M. Guerra
 - Samuel Brum Martins
-
-## Licença
-
-Este projeto é parte de um trabalho acadêmico do DCC-UFMG.
