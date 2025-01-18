@@ -68,6 +68,3 @@ Os resultados são salvos em um arquivo CSV contendo:
 ## Licença
 
 Este projeto é parte de um trabalho acadêmico do DCC-UFMG.
-
-
-Deseja que eu adicione ou modifique alguma parte específica do README?
