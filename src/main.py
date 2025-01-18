@@ -1,3 +1,6 @@
+import os
+import time
+import pandas as pd
 import igraph as ig
 import tsplib95
 import math
@@ -6,45 +9,67 @@ from twiceAroundTheTree import twice_around_the_tree
 from christofides import christofides
 from branch_and_bound import branch_and_bound
 
-# Função para calcular a distância Euclidiana
 def euclidean_distance(x1, y1, x2, y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
-# Caminho para o arquivo .tsp
-tsp_file_path = "data/att48.tsp"
+def create_graph_from_tsp(tsp_file_path):
+    problem = tsplib95.load(tsp_file_path)
+    G = ig.Graph()
+    
+    coordinates = problem.node_coords
+    for i, (node, (x, y)) in enumerate(coordinates.items()):
+        G.add_vertex(name=node, x=x, y=y)
+    
+    for i in range(len(coordinates)):
+        for j in range(i + 1, len(coordinates)):
+            x1, y1 = coordinates[i + 1]
+            x2, y2 = coordinates[j + 1]
+            distance = euclidean_distance(x1, y1, x2, y2)
+            G.add_edge(i, j, weight=distance)
+    
+    return G
 
-# Carregar o problema do TSP usando tsplib95
-problem = tsplib95.load(tsp_file_path)
-
-# Criar o grafo no formato igraph
-G = ig.Graph()
-
-# Adicionar os nós ao grafo (usando as coordenadas como atributos)
-coordinates = problem.node_coords
-for i, (node, (x, y)) in enumerate(coordinates.items()):
-    G.add_vertex(name=node, x=x, y=y)
-
-# Adicionar as arestas com as distâncias Euclidianas entre os nós
-for i in range(len(coordinates)):
-    for j in range(i + 1, len(coordinates)):  # Para garantir que as arestas não se repitam
-        # Obter as coordenadas dos dois nós
-        x1, y1 = coordinates[i + 1]  # índice começa em 1 no TSPLIB
-        x2, y2 = coordinates[j + 1]
-        
-        # Calcular a distância Euclidiana entre os dois nós
-        distance = euclidean_distance(x1, y1, x2, y2)
-        
-        # Adicionar a aresta ao grafo com o peso calculado
-        G.add_edge(i, j, weight=distance)
-
-# Verificar a estrutura do grafo
-print(f"Numero de nós: {len(G.vs)}")
-print(f"Numero de arestas: {len(G.es)}")
+def benchmark_instance(file_path):
+    results = []
+    filename = os.path.basename(file_path)
+    G = create_graph_from_tsp(file_path)
+    
+    start_time = time.time()
+    tour_length = christofides(G)
+    christ_time = time.time() - start_time
+    results.append({
+        'file': filename,
+        'algorithm': 'Christofides',
+        'tour_length': tour_length,
+        'time': christ_time
+    })
 
 
-#rodar com  twice-around-the-tree
-print(twice_around_the_tree(G))
-#rodar com Christofides
-print(christofides(G))
-#rodar com branch and bound
-print(branch_and_bound(G))
+    
+    return results
+
+def main():
+    data_dir = "data/"
+    output_file = "benchmark_results_3.csv"
+    
+    tsp_files = [f for f in os.listdir(data_dir) if f.endswith('.tsp')]
+    
+    for i, tsp_file in enumerate(tsp_files):
+        file_path = os.path.join(data_dir, tsp_file)
+        try:
+            results = benchmark_instance(file_path)
+            df = pd.DataFrame(results)
+
+            df.to_csv(output_file, 
+                     mode='a' if i > 0 else 'w',
+                     header=True if i == 0 else False, 
+                     index=False)
+            
+            print(f"Processed {tsp_file} and saved to {output_file}")
+        except Exception as e:
+            print(f"Error processing {tsp_file}: {str(e)}")
+    
+    print(f"All results saved to {output_file}")
+
+if __name__ == "__main__":
+    main()
